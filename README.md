@@ -47,7 +47,14 @@ Then using the [build function](https://developers.google.com/api-client-library
 youtube = build('youtube', 'v3', developerKey=api_key)
 ```
 
+Since our goal is to get Youtube comments on videos, at first we need the videos (obviously!). This can be done by the following [line of code](https://developers.google.com/youtube/v3/docs/search/list). 
+```
+videos = youtube.search().list(part='id',
+                            q=query,
+                            order = 'relevance',
+                            type='video',
+                            maxResults=50).execute()
+```
+Where query is predefined by the user to specify the topic of the videos; e.g: politics, news, Marvel, Messi. 
 
-
-
-
+This will return
