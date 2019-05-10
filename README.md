@@ -37,8 +37,15 @@ First of all, we need the API KEY
 api_key = "YOUR_API_KEY"
 ```
 
+Now we need to import the [Google API client Library](https://developers.google.com/api-client-library/python/start/get_started)
+```
+from apiclient.discovery import build
+```
+Then using the [build() function] (http://googleapis.github.io/google-api-python-client/docs/epy/googleapiclient.discovery-module.html#build) to create the service object. This function takes the api_name, api_version and developer_key as arguments which are youtube, v3 and api_key respectively in our case.
 
-
+```
+youtube = build('youtube', 'v3', developerKey=api_key)
+```
 
 
 
