@@ -144,7 +144,7 @@ The preprocessing in our case is divided into multiple steps as follwoing:
 
 1- Preparing and removing stop words.
 
-2- Converting words into their roots.
+2- Lemmatizing and stemming.
 
 3- Preprocessing using regular expressions.
 
@@ -164,8 +164,18 @@ stop_words.extend(['hello', '.com'])
 ```
 The part where we remove the stop words will follow later.
 
-**Converting words to their roots**
+**Lemmatizing and stemming**
 
-This step is called Lemmetization, again it helps to unify the existence of the same word but in different form, an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps to learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
-Again, thanks to nltk, this is not as tiring as it sounds. It can be done as following:
-
+Lemmatizing is changing past and future tenses to present tense and third point of view are changed to first point of view, whereas Stemming is simply convierting the word back to its root. Again these techniques help to unify the appearance of words that existed in different forms, as an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps the learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
+However, this is not as tiring as it sounds. It can be done using [WordNetlemmatizer](https://www.geeksforgeeks.org/python-lemmatization-with-nltk/) from nltk or lemmatizer from [spacy](https://spacy.io/api/lemmatizer), we will be using sapcy as it supports simple part of speech tagging(identifies if the word is verb, noun, adj, etc. 
+```
+#first download spacy 
+!python3 -m spacy download en
+nlp = spacy.load('en', disable=['parser', 'ner'])
+def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+    texts_out = []
+    for sent in texts:
+        doc = nlp(" ".join(sent)) 
+        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+    return texts_out
+```
