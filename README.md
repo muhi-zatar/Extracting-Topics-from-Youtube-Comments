@@ -143,8 +143,11 @@ After retrieving the Data from the database, it is mandatory to preprocess the d
 The preprocessing in our case is divided into multiple steps as follwoing:
 
 1- Preparing and removing stop words.
+
 2- Converting words into their roots.
+
 3- Preprocessing using regular expressions.
+
 4- Tokenizing.
 
 **Preparing and removing stop words**
