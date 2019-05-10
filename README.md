@@ -19,14 +19,19 @@ The workflow of this project can be summurized in the following steps:
 
 # Getting the Data
 
-Of course the first step will be crawling the Data (because what can we do without it). Getting comments from youtube can be divided into two steps; creating your project and creditentials on Google Developers and writing the code that crawls the users comments.
+Of course the first step will be crawling the Data (because what can we do without it). Getting comments from youtube can be divided into two steps; creating your project and credentials on Google Developers and writing the code that crawls the users comments.
 
+** Creating project and credentials **
 Youtube provides an API to access the comments on the videos with a proper [documentation](https://developers.google.com/youtube/v3/docs/commentThreads/list).
 To start with, one needs to create a project and Google Developers and Enable Youtube Data API; [a step by step guide](https://www.slickremix.com/docs/get-api-key-for-youtube/).
+
 Generally speaking, one can access and crawl comment on youtube by either creating [OAuth 2.0 credentials or API keys](https://developers.google.com/youtube/registering_an_application). For the purpose of this project, API keys will be used.
-Now assuming you got your API key, let's move to the next step. 
 
+Now assuming you got your API key, let's move to the next step and write the code. 
 
+** Writing the Code **
+
+** 
 
 
 
