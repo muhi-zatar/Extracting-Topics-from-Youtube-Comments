@@ -17,6 +17,8 @@ The workflow of this project can be summurized in the following steps:
 
 5- Visualize the results in a fancy way.
 
+# Getting the Data
 
-
+Of course the first step will be crawling the Data (because what can we do without it).
+Youtube provides an API to access the comments on the videos with a proper [documentation] (https://developers.google.com/youtube/v3/docs/commentThreads/list) 
 
