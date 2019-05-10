@@ -179,3 +179,29 @@ def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
         texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
     return texts_out
 ```
+**Preprocessing using regular expressions**
+
+[Regular expressions](https://www.machinelearningplus.com/python/python-regex-tutorial-examples/) is a very useful tool for preprocessing data such as; removing undesirable strings, spaces, etc. Which we will be using here for the purpose of text preprocessing.
+```
+import re
+
+# Remove Emails
+data = [re.sub('\S*@\S*\s?', '', sent) for sent in data]
+
+# Remove new line characters
+data = [re.sub('\s+', ' ', sent) for sent in data]
+
+# Remove distracting single quotes
+data = [re.sub("\'", "", sent) for sent in data]
+```
+
+**Tokeinization**
+
+Simply in this step, we're splitting sentences into words for purposes that will be more obvious later in the document. For doing this, [simple_preprocess from gensim](https://radimrehurek.com/gensim/utils.html) does the job in addition to removing punctuation and undesirable characters.
+```
+from gensim.utils import simple_preprocess
+def sent_to_words(sentences):
+    for sentence in sentences:
+        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
+```
+
