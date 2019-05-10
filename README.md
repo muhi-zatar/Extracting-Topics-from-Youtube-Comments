@@ -6,10 +6,15 @@ This project scrabs viewers comments on political videos on Youtube, while getti
 
 # Main Steps:
 The workflow of this project can be summurized in the following steps:
+
 1- Getting the Data (youtube comments on political videos). 
+
 2- Storing the collected data in a database using SQLite.
+
 3- Data preprocessing (This step is always more important than you think).
+
 4- Apply Latent Dirichlet Allocation (LDA) on the Data to get the topics.
+
 5- Visualize the results in a fancy way.
 
 
