@@ -32,6 +32,11 @@ Now assuming you got your API key, let's move to the next step and write the cod
 
 **Writing the Code**
 
+First of all, we need the API KEY
+'''
+api_key= "YOUR_API_KEY" 
+'''
+
 
 
 
