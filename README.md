@@ -148,6 +148,7 @@ The preprocessing in our case is divided into multiple steps as follwoing:
 4- Tokenizing.
 
 **Preparing and removing stop words**
+
 This step gives more emphasis on the words that are more relevant and help the learning technique to concentrate on them. Examples on stop words in english could be: 'and', 'but', 'a', 'how', 'what'. Words like these could occur in any text and hence it is better to remove them.
 
 Stop words removal start with stating these words, luckily, we have them ready thank to [Natural Language Toolkit (nltk)](https://www.nltk.org/). 
@@ -161,6 +162,7 @@ stop_words.extend(['hello', '.com'])
 The part where we remove the stop words will follow later.
 
 **Converting words to their roots**
+
 This step is called Lemmetization, again it helps to unify the existence of the same word but in different form, an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps to learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
 Again, tahnks to nltk, this is not as tough as it sounds. It can be done as following:
 
