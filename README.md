@@ -20,7 +20,9 @@ The workflow of this project can be summurized in the following steps:
 # Getting the Data
 
 Of course the first step will be crawling the Data (because what can we do without it).
-Youtube provides an API to access the comments on the videos with a proper [documentation](https://developers.google.com/youtube/v3/docs/commentThreads/list)
+Youtube provides an API to access the comments on the videos with a proper [documentation](https://developers.google.com/youtube/v3/docs/commentThreads/list).
+To start with, one needs to create a project and Google Developers and Enable Youtube Data API; [a step by step guide for this](https://www.slickremix.com/docs/get-api-key-for-youtube/)
+
 
 
 
