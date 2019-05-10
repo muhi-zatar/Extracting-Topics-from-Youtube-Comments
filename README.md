@@ -55,6 +55,21 @@ videos = youtube.search().list(part='id',
                             type='video',
                             maxResults=50).execute()
 ```
-Where query is predefined by the user to specify the topic of the videos; e.g: politics, news, Marvel, Messi. 
+Where query is predefined by the user to specify the topic of the videos; e.g: politics, news, Marvel, Messi. Where maxResults is the number of videos (0 to 50). 
+This will return the following(for one video):
 
-This will return
+Since we are concerned only about the comments of the video, hence we only need the ID of the video, which can be extracted as following (i is a value between 0 and maxResults):
+```
+videos['items'][i]['id']['videoId']
+```
+Now we are ready to extract the comments of the video using [this line](https://developers.google.com/youtube/v3/docs/commentThreads/list):
+```
+response = youtube.commentThreads().list(
+                    part = 'snippet',
+                    videoId = 'kdFFzjWJd2g',
+                    maxResults = 100, # Only take top 100 comments...
+                    order = 'relevance', #... ranked on relevance
+                    textFormat = 'plainText',
+                    ).execute()
+```
+
