@@ -167,5 +167,5 @@ The part where we remove the stop words will follow later.
 **Converting words to their roots**
 
 This step is called Lemmetization, again it helps to unify the existence of the same word but in different form, an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps to learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
-Again, tahnks to nltk, this is not as tough as it sounds. It can be done as following:
+Again, thanks to nltk, this is not as tiring as it sounds. It can be done as following:
 
