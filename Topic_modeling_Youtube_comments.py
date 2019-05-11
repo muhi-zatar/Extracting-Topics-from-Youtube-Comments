@@ -1,6 +1,7 @@
 # importing libraries and packages
 from apiclient.discovery import build
 import re
+import nltk
 import numpy as np
 import pandas as pd
 import gensim
@@ -11,10 +12,11 @@ from gensim.models import CoherenceModel
 import spacy
 from nltk.corpus import stopwords
 # Plotting tools
-import pyLDAvis
-import pyLDAvis.gensim  # don't skip this
+#import pyLDAvis
+#import pyLDAvis.gensim  # don't skip this
 import matplotlib.pyplot as plt
 %matplotlib inline
+nltk.download('stopwords')
 
 def get_videos(query):
   videos_list = [] #storing the videos IDs in a list
@@ -31,13 +33,13 @@ def get_videos(query):
   
   i = 0 #number of pages to navigate through
   #the following lines is to navigate through multiple pages, as the search request return nextPageToken if exists
-  while 'nextPageToken' in videos and i < 20:
+  while 'nextPageToken' in videos and i < 2:
     videos = youtube.search().list(part='id',
                             q=query, #the topic we want
                             order = 'relevance', #ranked on relevance
                             type='video',
                             maxResults=50,
-                            pageToken = res['nextPageToken']).execute()
+                            pageToken = videos['nextPageToken']).execute()
     
     for j in range(50):
       try:
@@ -74,12 +76,7 @@ def get_comments(videosId_list):
         continue
   return comment_list
 
-stop_words = stopwords.words('english')
-# we can also extend our stopwords
-stop_words.extend(['hello', '.com'])
 !python3 -m spacy download en
-
-
 
 def prepare_data(data): 
   data = [re.sub('\S*@\S*\s?', '', sent) for sent in data]
@@ -95,10 +92,13 @@ def sent_to_words(sentences):
     yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
 
 def remove_stopwords(texts):
+  stop_words = stopwords.words('english')
+  # we can also extend our stopwords
+  stop_words.extend(['hello', '.com'])
   return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
 
-def make_bigrams(texts):
-  bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+def make_bigrams(texts, data_words):
+  bigram = gensim.models.Phrases(data_words, min_count=1, threshold=10) # higher threshold fewer phrases.
   bigram_mod = gensim.models.phrases.Phraser(bigram)
   return [bigram_mod[doc] for doc in texts]
 
@@ -133,18 +133,17 @@ def build_LDA(topics_num, corpus, id2word):
   
   print(lda_model.print_topics())
   
-if __name__== "__main__":
-  api_key = "YOUR_API_KEY"
-  youtube = build('youtube', 'v3', developerKey=api_key)
-  videos_list = get_videos('politics')
-  comments_list = get_comments(videos_list)
-  comments = prepare_data(comments_list)
-  data_tokenized = list(sent_to_word(comments))
-  data_words_nostops = remove_stopwords(data_tokenized)
+  if __name__== "__main__":
+    api_key = "AIzaSyB9u9kWqwODlegCLS0Nrae_oYvMCfD6-7E"
+    youtube = build('youtube', 'v3', developerKey=api_key)
+    videos_list = get_videos('politics')
+    comments_list = get_comments(videos_list)
+    comments = prepare_data(comments_list)
+    data_tokenized = list(sent_to_words(comments))
+    data_words_nostops = remove_stopwords(data_tokenized)
   # Form Bigrams
-  data_words_bigrams = make_bigrams(data_words_nostops)
+    data_words_bigrams = make_bigrams(data_words_nostops,data_tokenized)
   # Do lemmatization keeping only noun, adj, vb, adv
-  data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
-  corpus, id2word = word2id(data_lemmatized)
-  build_LDA(5,corpus,id2word)
-  
+    data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
+    corpus, id2word = word2id(data_lemmatized)
+    build_LDA(5,corpus,id2word)
