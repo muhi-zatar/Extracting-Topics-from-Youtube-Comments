@@ -9,12 +9,13 @@ from gensim.utils import simple_preprocess
 from gensim.models import CoherenceModel
 # spacy for lemmatization
 import spacy
-
+from nltk.corpus import stopwords
 # Plotting tools
 import pyLDAvis
 import pyLDAvis.gensim  # don't skip this
 import matplotlib.pyplot as plt
 %matplotlib inline
+
 def get_videos(query, api_key):
   youtube = build('youtube', 'v3', developerKey=api_key)
   videos_list = [] #storing the videos IDs in a list
@@ -73,3 +74,48 @@ def get_comments(videosId_list):
       except:
         continue
   return comment_list
+
+stop_words = stopwords.words('english')
+# we can also extend our stopwords
+stop_words.extend(['hello', '.com'])
+!python3 -m spacy download en
+nlp = spacy.load('en', disable=['parser', 'ner'])
+
+
+def prepare_data(data): 
+  data = [re.sub('\S*@\S*\s?', '', sent) for sent in data]
+
+# Remove new line characters
+  data = [re.sub('\s+', ' ', sent) for sent in data]
+
+# Remove distracting single quotes
+  data = [re.sub("\'", "", sent) for sent in data]
+
+  print(data[:1])
+  return data
+
+def sent_to_words(sentences):
+    for sentence in sentences:
+        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
+
+data_words = list(sent_to_words(data))
+
+bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+bigram_mod = gensim.models.phrases.Phraser(bigram)
+
+def remove_stopwords(texts):
+    return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
+
+def make_bigrams(texts):
+    return [bigram_mod[doc] for doc in texts]
+
+def make_trigrams(texts):
+    return [trigram_mod[bigram_mod[doc]] for doc in texts]
+
+def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+    """https://spacy.io/api/annotation"""
+    texts_out = []
+    for sent in texts:
+        doc = nlp(" ".join(sent)) 
+        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+    return texts_out
