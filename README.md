@@ -143,7 +143,15 @@ for i in videos_list:
     except:
       continue
  ```
-# Storing the collected Data in a database
+# Storing the collected Data
+
+The collected data is valuable indeed, and therefore it is recommended to be stored for future use. One can store the data in a file (CSV, Excel, text). In python, this can be done easily using the following command.
+```
+with open('youtube_comments.txt', 'w') as f:
+    for comment in comment_list:
+        f.write("%s\n" % item)
+```
+On the other hand, amore sophisticated and feasible way to store data is using a database. 
 
 # Data Preprocessing
 
