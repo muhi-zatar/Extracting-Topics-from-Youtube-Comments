@@ -16,8 +16,7 @@ import pyLDAvis.gensim  # don't skip this
 import matplotlib.pyplot as plt
 %matplotlib inline
 
-def get_videos(query, api_key):
-  youtube = build('youtube', 'v3', developerKey=api_key)
+def get_videos(query):
   videos_list = [] #storing the videos IDs in a list
   videos = youtube.search().list(part='id',
                             q=query,
@@ -109,9 +108,6 @@ def remove_stopwords(texts):
 def make_bigrams(texts):
     return [bigram_mod[doc] for doc in texts]
 
-def make_trigrams(texts):
-    return [trigram_mod[bigram_mod[doc]] for doc in texts]
-
 def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
     """https://spacy.io/api/annotation"""
     texts_out = []
@@ -119,3 +115,43 @@ def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
         doc = nlp(" ".join(sent)) 
         texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
     return texts_out
+# Remove Stop Words
+data_words_nostops = remove_stopwords(data_words)
+
+# Form Bigrams
+data_words_bigrams = make_bigrams(data_words_nostops)
+
+# Initialize spacy 'en' model, keeping only tagger component (for efficiency)
+nlp = spacy.load('en', disable=['parser', 'ner'])
+
+# Do lemmatization keeping only noun, adj, vb, adv
+data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
+
+# Create Dictionary
+id2word = corpora.Dictionary(data_lemmatized)
+
+# Create Corpus
+texts = data_lemmatized
+
+# Term Document Frequency
+corpus = [id2word.doc2bow(text) for text in texts]
+
+def build_LDA(topics_num, corpus, id2word):
+  lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
+                                           id2word=id2word,
+                                           num_topics=topics_num, 
+                                           random_state=100,
+                                           update_every=1,
+                                           chunksize=100,
+                                           passes=10,
+                                           alpha='auto',
+                                           per_word_topics=True)
+  
+  print(lda_model.print_topics())
+  
+if __name__== "__main__":
+  api_key = "YOUR_API_KEY"
+  youtube = build('youtube', 'v3', developerKey=api_key)
+  videos_list = get_videos('politics')
+  comments_list = get_comments(videos_list)
+  
