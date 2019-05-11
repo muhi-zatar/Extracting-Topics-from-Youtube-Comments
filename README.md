@@ -338,6 +338,59 @@ Now we cant get the keywords in each topic by writing the following line:
 print(lda_model.print_topics())
 ```
 The output of this line will be in the following format:
-which can be interpreted as...
+```
+[(0,
+  '0.046*"video" + 0.020*"right" + 0.017*"also" + 0.016*"watch" + 0.013*"have" '
+  '+ 0.013*"congress" + 0.012*"first" + 0.009*"law" + 0.009*"interview" + '
+  '0.008*"medium"'),
+ (1,
+  '0.028*"work" + 0.022*"could" + 0.015*"tell" + 0.013*"hear" + 0.013*"hate" + '
+  '0.012*"build" + 0.011*"money" + 0.010*"mind" + 0.009*"modiji_modiji" + '
+  '0.009*"next"'),
+ (2,
+  '0.040*"not" + 0.025*"do" + 0.021*"be" + 0.013*"great" + 0.010*"way" + '
+  '0.010*"politic" + 0.010*"party" + 0.010*"political" + 0.008*"can" + '
+  '0.007*"government"'),
+ (3,
+  '0.027*"really" + 0.024*"guy" + 0.020*"well" + 0.019*"bjp" + 0.017*"hai" + '
+  '0.017*"modi" + 0.013*"long" + 0.013*"still" + 0.010*"someone" + 0.009*"ki"'),
+ (4,
+  '0.021*"people" + 0.020*"good" + 0.017*"get" + 0.014*"s" + 0.014*"make" + '
+  '0.014*"say" + 0.013*"would" + 0.013*"trump" + 0.013*"think" + 0.012*"go"')]
+```
+How to interpret this?
 
+Topic 0 is a represented as (0,
+  '0.046*"video" + 0.020*"right" + 0.017*"also" + 0.016*"watch" + 0.013*"have" '
+  '+ 0.013*"congress" + 0.012*"first" + 0.009*"law" + 0.009*"interview" + '
+  '0.008*"medium"'),.
 
+It means the top 10 keywords that contribute to this topic are: ‘video’, ‘right’, ‘also’.. and so on and the weight of ‘video’ on topic 0 is 0.046.
+
+The weights reflect how important a keyword is to that topic.
+
+**Data Visualization**
+ 
+ There are multiple ways that we can visualize and represent our results from topic modeling using LDA. However, one popular way to do that is using [pyLDAvis](https://pyldavis.readthedocs.io/en/latest/readme.html).
+ ```
+ import pyLDAvis.gensim
+pyLDAvis.enable_notebook()
+vis = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary=lda_model.id2word)
+vis
+```
+**Image of the results will be posted one's ready**
+
+# Future work and enhancement
+
+It is inevitable that the built model can be enhanced in many ways, some examples are:
+
+- Optimizing the selection of the number of topic using [Topic Cohernence score](https://rare-technologies.com/what-is-topic-coherence/)
+
+- Manual Error Analysis that my lead to some useful conclusions in some stages such as removing some words and expressions in the preprocessing stage.
+
+- More data (always a solution)
+
+- Using [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) which is intended to reflect how important a word is to a document in a collection or corpus. 
+
+-  Building LDA Mallet Model, which usually gives better models and results. 
+ 
