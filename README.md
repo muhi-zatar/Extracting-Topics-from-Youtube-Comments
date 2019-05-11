@@ -1,4 +1,4 @@
-# Extracting-Topics-from-Youtube-Comments
+# Extracting Topics from Youtube Comments
 # Inroduction
 Youtube is a video sharing website that is extremely popular and is used daily by millions of users around the world for differnet reasons and purposes, such as; entertainment, education, news and for getting to know for about some topics and people. Youtube also offers viewers to interact with the videos in the comments as they discuss topics related to the content of the video (not always the case).
 
@@ -148,7 +148,9 @@ The preprocessing in our case is divided into multiple steps as follwoing:
 
 3- Preprocessing using regular expressions.
 
-4- Tokenizing.
+4- Tokenization.
+
+5- Create bag of words(bigram, trigram models).
 
 **Preparing and removing stop words**
 
@@ -194,7 +196,6 @@ data = [re.sub('\s+', ' ', sent) for sent in data]
 # Remove distracting single quotes
 data = [re.sub("\'", "", sent) for sent in data]
 ```
-
 **Tokeinization**
 
 Simply in this step, we're splitting sentences into words for purposes that will be more obvious later in the document. For doing this, [simple_preprocess from gensim](https://radimrehurek.com/gensim/utils.html) does the job in addition to removing punctuation and undesirable characters.
@@ -204,6 +205,8 @@ def sent_to_words(sentences):
     for sentence in sentences:
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
 ```
+**Create bag of words (bigram, trigram models)**
+
 # Apply Latent Dirichlet Allocation (LDA)
 
 Latent Dirichlet Allocation (LDA) is an unsupervised learning algorithm for topic modeling. To tell briefly, LDA imagines a fixed set of topics. Each topic represents a set of words. And the goal of LDA is to map all the documents to the topics in a way, such that the words in each document are mostly captured by those imaginary topics. For more details, read the [paper](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf), or [this article](https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-latent-dirichlet-allocation-437c81220158) and have a look on [this video](https://www.youtube.com/watch?v=3mHy4OSyRf0). With Gensim, life is much easier for building this algorithm; you only have to predetermine the number of topics, get the data, clean it and gensim does the magic. 
@@ -242,3 +245,5 @@ print(lda_model.print_topics())
 ```
 The output of this line will be in the following format:
 which can be interpreted as...
+
+
