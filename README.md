@@ -378,13 +378,13 @@ pyLDAvis.enable_notebook()
 vis = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary=lda_model.id2word)
 vis
 ```
-**Image of the results will be posted one's ready**
+**Image of the results will be posted once ready**
 
 # Future work and enhancement
 
 It is inevitable that the built model can be enhanced in many ways, some examples are:
 
-- Optimizing the selection of the number of topic using [Topic Cohernence score](https://rare-technologies.com/what-is-topic-coherence/)
+- Optimizing the selection of the number of topic using [Topic Cohernence score](https://rare-technologies.com/what-is-topic-coherence/) and tunning the parameters of the LDA to increase the topic coherence.
 
 - Manual Error Analysis that my lead to some useful conclusions in some stages such as removing some words and expressions in the preprocessing stage.
 
