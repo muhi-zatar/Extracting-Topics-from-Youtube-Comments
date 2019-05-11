@@ -110,7 +110,7 @@ while 'nextPageToken' in videos and i < 20:
                             order = 'relevance', #ranked on relevance
                             type='video',
                             maxResults=50,
-                            pageToken = res['nextPageToken']).execute()
+                            pageToken = videos['nextPageToken']).execute()
     
   for j in range(50):
     try:
@@ -151,45 +151,16 @@ After retrieving the Data from the database, it is mandatory to preprocess the d
 
 The preprocessing in our case is divided into multiple steps as follwoing:
 
-1- Preparing and removing stop words.
+1- Preprocessing using regular expressions.
 
-2- Lemmatizing and stemming.
+2- Tokenization.
 
-3- Preprocessing using regular expressions.
+3- Preparing and removing stop words.
 
-4- Tokenization.
+4- Create bag of words(bigram models).
 
-5- Create bag of words(bigram models).
+5- Lemmatizing and stemming.
 
-**Preparing and removing stop words**
-
-This step gives more emphasis on the words that are more relevant and help the learning technique to concentrate on them. Examples on stop words in english could be: 'and', 'but', 'a', 'how', 'what'. Words like these could occur in any text and hence it is better to remove them.
-
-Stop words removal start with stating these words, luckily, we have them ready thank to [Natural Language Toolkit (nltk)](https://www.nltk.org/). 
-The following lines of code prepares the stop words in english. 
-```python
-from nltk.corpus import stopwords
-stop_words = stopwords.words('english')
-# we can also extend our stopwords
-stop_words.extend(['hello', '.com'])
-```
-The part where we remove the stop words will follow later.
-
-**Lemmatizing and stemming**
-
-Lemmatizing is changing past and future tenses to present tense and third point of view are changed to first point of view, whereas Stemming is simply convierting the word back to its root. Again these techniques help to unify the appearance of words that existed in different forms, as an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps the learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
-However, this is not as tiring as it sounds. It can be done using [WordNetlemmatizer](https://www.geeksforgeeks.org/python-lemmatization-with-nltk/) from nltk or lemmatizer from [spacy](https://spacy.io/api/lemmatizer), we will be using sapcy as it supports simple part of speech tagging(identifies if the word is verb, noun, adj, etc. 
-```python
-#first download spacy 
-!python3 -m spacy download en
-nlp = spacy.load('en', disable=['parser', 'ner'])
-def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-    texts_out = []
-    for sent in texts:
-        doc = nlp(" ".join(sent)) 
-        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
-    return texts_out
-```
 **Preprocessing using regular expressions**
 
 [Regular expressions](https://www.machinelearningplus.com/python/python-regex-tutorial-examples/) is a very useful tool for preprocessing data such as; removing undesirable strings, spaces, etc. Which we will be using here for the purpose of text preprocessing.
@@ -214,12 +185,42 @@ def sent_to_words(sentences):
     for sentence in sentences:
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
 ```
+**Preparing and removing stop words**
+
+This step gives more emphasis on the words that are more relevant and help the learning technique to concentrate on them. Examples on stop words in english could be: 'and', 'but', 'a', 'how', 'what'. Words like these could occur in any text and hence it is better to remove them.
+
+Stop words removal start with stating these words, luckily, we have them ready thank to [Natural Language Toolkit (nltk)](https://www.nltk.org/). 
+The following lines of code prepares the stop words in english. 
+```python
+from nltk.corpus import stopwords
+stop_words = stopwords.words('english')
+# we can also extend our stopwords
+stop_words.extend(['hello', '.com'])
+```
+The part where we remove the stop words will follow later.
+
 **Create bag of words (bigram models)**
 
 Bigrams are two words frequently occurring together in the document. Again, they can be [created in gensim](https://radimrehurek.com/gensim/models/phrases.html)
 ```python
 bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
 bigram_mod = gensim.models.phrases.Phraser(bigram)
+```
+
+**Lemmatizing and stemming**
+
+Lemmatizing is changing past and future tenses to present tense and third point of view are changed to first point of view, whereas Stemming is simply convierting the word back to its root. Again these techniques help to unify the appearance of words that existed in different forms, as an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps the learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
+However, this is not as tiring as it sounds. It can be done using [WordNetlemmatizer](https://www.geeksforgeeks.org/python-lemmatization-with-nltk/) from nltk or lemmatizer from [spacy](https://spacy.io/api/lemmatizer), we will be using sapcy as it supports simple part of speech tagging(identifies if the word is verb, noun, adj, etc. 
+```python
+#first download spacy 
+!python3 -m spacy download en
+nlp = spacy.load('en', disable=['parser', 'ner'])
+def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+    texts_out = []
+    for sent in texts:
+        doc = nlp(" ".join(sent)) 
+        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+    return texts_out
 ```
 
 # Apply Latent Dirichlet Allocation (LDA)
