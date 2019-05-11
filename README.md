@@ -204,4 +204,8 @@ def sent_to_words(sentences):
     for sentence in sentences:
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
 ```
+# Apply Latent Dirichlet Allocation (LDA)
+
+Latent Dirichlet Allocation (LDA) is an unsupervised learning algorithm for topic modeling. To tell briefly, LDA imagines a fixed set of topics. Each topic represents a set of words. And the goal of LDA is to map all the documents to the topics in a way, such that the words in each document are mostly captured by those imaginary topics. For more details, read the [paper](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf), or [this article](https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-latent-dirichlet-allocation-437c81220158) and have a look on [this video](https://www.youtube.com/watch?v=3mHy4OSyRf0). With Gensim, life is much easier for building this algorithm; you only have to predetermine the number of topics, get the data, clean it and gensim does the magic. 
+```
 
