@@ -78,64 +78,48 @@ stop_words = stopwords.words('english')
 # we can also extend our stopwords
 stop_words.extend(['hello', '.com'])
 !python3 -m spacy download en
-nlp = spacy.load('en', disable=['parser', 'ner'])
+
 
 
 def prepare_data(data): 
   data = [re.sub('\S*@\S*\s?', '', sent) for sent in data]
-
 # Remove new line characters
   data = [re.sub('\s+', ' ', sent) for sent in data]
-
 # Remove distracting single quotes
   data = [re.sub("\'", "", sent) for sent in data]
 
-  print(data[:1])
   return data
 
 def sent_to_words(sentences):
-    for sentence in sentences:
-        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
-
-data_words = list(sent_to_words(data))
-
-bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
-bigram_mod = gensim.models.phrases.Phraser(bigram)
+  for sentence in sentences:
+    yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
 
 def remove_stopwords(texts):
-    return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
+  return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
 
 def make_bigrams(texts):
-    return [bigram_mod[doc] for doc in texts]
+  bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+  bigram_mod = gensim.models.phrases.Phraser(bigram)
+  return [bigram_mod[doc] for doc in texts]
 
 def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-    """https://spacy.io/api/annotation"""
-    texts_out = []
-    for sent in texts:
-        doc = nlp(" ".join(sent)) 
-        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
-    return texts_out
-# Remove Stop Words
-data_words_nostops = remove_stopwords(data_words)
+  texts_out = []
+  # Initialize spacy 'en' model, keeping only tagger component (for efficiency)
+  nlp = spacy.load('en', disable=['parser', 'ner'])
+  for sent in texts:
+      doc = nlp(" ".join(sent)) 
+      texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+  return texts_out
 
-# Form Bigrams
-data_words_bigrams = make_bigrams(data_words_nostops)
-
-# Initialize spacy 'en' model, keeping only tagger component (for efficiency)
-nlp = spacy.load('en', disable=['parser', 'ner'])
-
-# Do lemmatization keeping only noun, adj, vb, adv
-data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
-
-# Create Dictionary
-id2word = corpora.Dictionary(data_lemmatized)
-
-# Create Corpus
-texts = data_lemmatized
-
-# Term Document Frequency
-corpus = [id2word.doc2bow(text) for text in texts]
-
+def word2id(data_lemmatized):
+  # Create Dictionary
+  id2word = corpora.Dictionary(data_lemmatized)
+  # Create Corpus
+  texts = data_lemmatized
+  # Term Document Frequency
+  corpus = [id2word.doc2bow(text) for text in texts]
+  return corpus, id2word
+  
 def build_LDA(topics_num, corpus, id2word):
   lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
                                            id2word=id2word,
@@ -154,4 +138,13 @@ if __name__== "__main__":
   youtube = build('youtube', 'v3', developerKey=api_key)
   videos_list = get_videos('politics')
   comments_list = get_comments(videos_list)
+  comments = prepare_data(comments_list)
+  data_tokenized = list(sent_to_word(comments))
+  data_words_nostops = remove_stopwords(data_tokenized)
+  # Form Bigrams
+  data_words_bigrams = make_bigrams(data_words_nostops)
+  # Do lemmatization keeping only noun, adj, vb, adv
+  data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
+  corpus, id2word = word2id(data_lemmatized)
+  build_LDA(5,corpus,id2word)
   
