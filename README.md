@@ -150,7 +150,7 @@ The preprocessing in our case is divided into multiple steps as follwoing:
 
 4- Tokenization.
 
-5- Create bag of words(bigram, trigram models).
+5- Create bag of words(bigram models).
 
 **Preparing and removing stop words**
 
@@ -205,7 +205,13 @@ def sent_to_words(sentences):
     for sentence in sentences:
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
 ```
-**Create bag of words (bigram, trigram models)**
+**Create bag of words (bigram models)**
+
+Bigrams are two words frequently occurring together in the document. Again, they can be [created in gensim](https://radimrehurek.com/gensim/models/phrases.html)
+```
+bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+bigram_mod = gensim.models.phrases.Phraser(bigram)
+```
 
 # Apply Latent Dirichlet Allocation (LDA)
 
