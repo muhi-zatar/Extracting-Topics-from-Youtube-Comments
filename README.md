@@ -207,5 +207,33 @@ def sent_to_words(sentences):
 # Apply Latent Dirichlet Allocation (LDA)
 
 Latent Dirichlet Allocation (LDA) is an unsupervised learning algorithm for topic modeling. To tell briefly, LDA imagines a fixed set of topics. Each topic represents a set of words. And the goal of LDA is to map all the documents to the topics in a way, such that the words in each document are mostly captured by those imaginary topics. For more details, read the [paper](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf), or [this article](https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-latent-dirichlet-allocation-437c81220158) and have a look on [this video](https://www.youtube.com/watch?v=3mHy4OSyRf0). With Gensim, life is much easier for building this algorithm; you only have to predetermine the number of topics, get the data, clean it and gensim does the magic. 
+
+But first of all, as known, machines do not understand words, and hence we need to represent each word by a differen id in a dictionary, and calculating the frequency of each term. This can be done using [doc2bow from gensim](https://radimrehurek.com/gensim/corpora/dictionary.html)
 ```
+# Create Dictionary
+id2word = corpora.Dictionary(data_lemmatized)
+
+# Create Corpus
+texts = data_lemmatized
+
+# Term Document Frequency
+corpus = [id2word.doc2bow(text) for text in texts]
+
+# View
+print(corpus[:1])
+```
+Now we have everything ready to build the [LDA model](https://radimrehurek.com/gensim/models/ldamodel.html)
+```
+lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
+                                           id2word=id2word,
+                                           num_topics=20, 
+                                           random_state=100,
+                                           update_every=1,
+                                           chunksize=100,
+                                           passes=10,
+                                           alpha='auto',
+                                           per_word_topics=True)
+```
+# Interpreting and visualizing the results
+
 
