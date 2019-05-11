@@ -65,7 +65,13 @@ videos = youtube.search().list(part='id',
                             maxResults=50).execute()
 ```
 Where query is predefined by the user to specify the topic of the videos; e.g: politics, news, Marvel, Messi. Where maxResults is the number of videos (0 to 50). But be careful as you cant do this all day due to the [daily quota](https://developers.google.com/youtube/v3/getting-started#quota) 
+
 This will return the following(for one video):
+```
+{'etag': '"XpPGQXPnxQJhLgs6enD_n8JR4Qk/anRstLeDC5jwWAjZoA6OemWG3-A"',
+ 'id': {'kind': 'youtube#video', 'videoId': 'kdFFzjWJd2g'},
+ 'kind': 'youtube#searchResult'}
+```
 
 Since we are concerned only about the comments of the video, hence we only need the ID of the video, which can be extracted as following (i is a value between 0 and maxResults):
 ```python
@@ -81,7 +87,32 @@ comments = youtube.commentThreads().list(
                     textFormat = 'plainText',
                     ).execute()
 ```
-This will return, and we are only concerned about the comments of the users, which we can extract using this command line:9i is a value between 0 and maxResults):
+Executing this will return the following for one video:
+```
+{'etag': '"XpPGQXPnxQJhLgs6enD_n8JR4Qk/PQb0UysY2hmL5QQLd7NNAwko7sQ"',
+ 'id': 'UgwfqkoJx7fsJPv6-iJ4AaABAg',
+ 'kind': 'youtube#commentThread',
+ 'snippet': {'canReply': True,
+  'isPublic': True,
+  'topLevelComment': {'etag': '"XpPGQXPnxQJhLgs6enD_n8JR4Qk/8uH99A9-wjz1kHxAyoV2OwRbEhQ"',
+   'id': 'UgwfqkoJx7fsJPv6-iJ4AaABAg',
+   'kind': 'youtube#comment',
+   'snippet': {'authorChannelId': {'value': 'UCWyqLzBpUpJ655riXS7GNZQ'},
+    'authorChannelUrl': 'http://www.youtube.com/channel/UCWyqLzBpUpJ655riXS7GNZQ',
+    'authorDisplayName': 'Iyobo Festus',
+    'authorProfileImageUrl': 'https://yt3.ggpht.com/-ZAzGYA7HgIs/AAAAAAAAAAI/AAAAAAAAAAA/i2UDO4HGlCA/s28-c-k-no-mo-rj-c0xffffff/photo.jpg',
+    'canRate': True,
+    'likeCount': 11,
+    'publishedAt': '2019-05-09T03:58:28.000Z',
+    'textDisplay': "It's  good  to be sincere  Atiku  was the winner  of that election",
+    'textOriginal': "It's  good  to be sincere  Atiku  was the winner  of that election",
+    'updatedAt': '2019-05-09T03:58:28.000Z',
+    'videoId': 'kdFFzjWJd2g',
+    'viewerRating': 'none'}},
+  'totalReplyCount': 1,
+  'videoId': 'kdFFzjWJd2g'}}
+```
+However, we are only concerned about the comments of the users, which we can extract using this command line(i is a value between 0 and maxResults):
 ```python
 comment_list.append(response['items'][j]['snippet']['topLevelComment']['snippet']['textDisplay'])
 ```
