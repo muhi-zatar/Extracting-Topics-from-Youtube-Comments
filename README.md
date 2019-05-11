@@ -206,7 +206,7 @@ def list_to_listoflists(lst):
       
     return(result) 
 new_list = list_to_listoflists(comment_list)
-cur.executemany("INSERT INTO samples VALUES (?)", new_list)
+cur.executemany("INSERT INTO Youtube VALUES (?)", new_list)
 con.commit()
 ```
 Now to fetch the data from the database, the following command is used:
