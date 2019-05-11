@@ -177,7 +177,7 @@ for i in videos_list:
 # Storing the collected Data
 
 The collected data is valuable indeed, and therefore it is recommended to be stored for future use. One can store the data in a file (CSV, Excel, text). In python, this can be done easily using the following command.
-```
+```python
 with open('youtube_comments.txt', 'w') as f:
     for comment in comment_list:
         f.write("%s\n" % item)
