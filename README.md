@@ -33,22 +33,22 @@ Now assuming you got your API key, let's move to the next step and write the cod
 **Writing the Code**
 
 First of all, we need the API KEY
-```
+```python
 api_key = "YOUR_API_KEY"
 ```
 
 Now we need to import the [Google API client Library](https://developers.google.com/api-client-library/python/start/get_started)
-```
+```python
 from apiclient.discovery import build
 ```
 Then using the [build function](https://developers.google.com/api-client-library/python/start/get_started#building-and-calling-a-service) to create the service object. This function takes the api_name, api_version and developer_key as arguments which are youtube, v3 and api_key respectively in our case.
 
-```
+```python
 youtube = build('youtube', 'v3', developerKey=api_key)
 ```
 
 Since our goal is to get Youtube comments on videos, at first we need the videos (obviously!). This can be done by the following [line of code](https://developers.google.com/youtube/v3/docs/search/list). 
-```
+```python
 videos = youtube.search().list(part='id',
                             q=query,
                             order = 'relevance',
@@ -59,11 +59,11 @@ Where query is predefined by the user to specify the topic of the videos; e.g: p
 This will return the following(for one video):
 
 Since we are concerned only about the comments of the video, hence we only need the ID of the video, which can be extracted as following (i is a value between 0 and maxResults):
-```
+```python
 videos['items'][i]['id']['videoId']
 ```
 Now we are ready to extract the comments of the video using [this line](https://developers.google.com/youtube/v3/docs/commentThreads/list):
-```
+```python
 comments = youtube.commentThreads().list(
                     part = 'snippet',
                     videoId = VideoId,
@@ -73,11 +73,11 @@ comments = youtube.commentThreads().list(
                     ).execute()
 ```
 This will return, and we are only concerned about the comments of the users, which we can extract using this command line:9i is a value between 0 and maxResults):
-```
+```python
 comment_list.append(response['items'][j]['snippet']['topLevelComment']['snippet']['textDisplay'])
 ```
 To wrap up, this is the whole code that will extract user comments from political videos on Youtube using Youtube Data API with some modifications from the above, such as navigating through multiple pages (the comments in the code will lead you through that):
-```
+```python
 api_key = "YOUR_API_KEY"
 from apiclient.discovery import build
 youtube = build('youtube', 'v3', developerKey=api_key)
@@ -158,7 +158,7 @@ This step gives more emphasis on the words that are more relevant and help the l
 
 Stop words removal start with stating these words, luckily, we have them ready thank to [Natural Language Toolkit (nltk)](https://www.nltk.org/). 
 The following lines of code prepares the stop words in english. 
-```
+```python
 from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
 # we can also extend our stopwords
@@ -170,7 +170,7 @@ The part where we remove the stop words will follow later.
 
 Lemmatizing is changing past and future tenses to present tense and third point of view are changed to first point of view, whereas Stemming is simply convierting the word back to its root. Again these techniques help to unify the appearance of words that existed in different forms, as an example; rockets is converted back to rocket, walks, walked and walking are converted to walk. This helps the learning technique not to get confused by these form of the same word (after all, the machines are not as smart as us, so far!).
 However, this is not as tiring as it sounds. It can be done using [WordNetlemmatizer](https://www.geeksforgeeks.org/python-lemmatization-with-nltk/) from nltk or lemmatizer from [spacy](https://spacy.io/api/lemmatizer), we will be using sapcy as it supports simple part of speech tagging(identifies if the word is verb, noun, adj, etc. 
-```
+```python
 #first download spacy 
 !python3 -m spacy download en
 nlp = spacy.load('en', disable=['parser', 'ner'])
@@ -184,7 +184,7 @@ def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
 **Preprocessing using regular expressions**
 
 [Regular expressions](https://www.machinelearningplus.com/python/python-regex-tutorial-examples/) is a very useful tool for preprocessing data such as; removing undesirable strings, spaces, etc. Which we will be using here for the purpose of text preprocessing.
-```
+```python
 import re
 
 # Remove Emails
@@ -199,7 +199,7 @@ data = [re.sub("\'", "", sent) for sent in data]
 **Tokeinization**
 
 Simply in this step, we're splitting sentences into words for purposes that will be more obvious later in the document. For doing this, [simple_preprocess from gensim](https://radimrehurek.com/gensim/utils.html) does the job in addition to removing punctuation and undesirable characters.
-```
+```python
 from gensim.utils import simple_preprocess
 def sent_to_words(sentences):
     for sentence in sentences:
@@ -208,7 +208,7 @@ def sent_to_words(sentences):
 **Create bag of words (bigram models)**
 
 Bigrams are two words frequently occurring together in the document. Again, they can be [created in gensim](https://radimrehurek.com/gensim/models/phrases.html)
-```
+```python
 bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
 bigram_mod = gensim.models.phrases.Phraser(bigram)
 ```
@@ -218,7 +218,7 @@ bigram_mod = gensim.models.phrases.Phraser(bigram)
 Latent Dirichlet Allocation (LDA) is an unsupervised learning algorithm for topic modeling. To tell briefly, LDA imagines a fixed set of topics. Each topic represents a set of words. And the goal of LDA is to map all the documents to the topics in a way, such that the words in each document are mostly captured by those imaginary topics. For more details, read the [paper](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf), or [this article](https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-latent-dirichlet-allocation-437c81220158) and have a look on [this video](https://www.youtube.com/watch?v=3mHy4OSyRf0). With Gensim, life is much easier for building this algorithm; you only have to predetermine the number of topics, get the data, clean it and gensim does the magic. 
 
 But first of all, as known, machines do not understand words, and hence we need to represent each word by a differen id in a dictionary, and calculating the frequency of each term. This can be done using [doc2bow from gensim](https://radimrehurek.com/gensim/corpora/dictionary.html)
-```
+```python
 # Create Dictionary
 id2word = corpora.Dictionary(data_lemmatized)
 
@@ -232,7 +232,7 @@ corpus = [id2word.doc2bow(text) for text in texts]
 print(corpus[:1])
 ```
 Now we have everything ready to build the [LDA model](https://radimrehurek.com/gensim/models/ldamodel.html)
-```
+```python
 lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
                                            id2word=id2word,
                                            num_topics=5, 
@@ -246,7 +246,7 @@ lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
 # Interpreting and visualizing the results
 
 Now we cant get the keywords in each topic by writing the following line:
-```
+```python
 print(lda_model.print_topics())
 ```
 The output of this line will be in the following format:
