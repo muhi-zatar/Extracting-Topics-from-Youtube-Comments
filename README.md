@@ -226,7 +226,7 @@ Now we have everything ready to build the [LDA model](https://radimrehurek.com/g
 ```
 lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
                                            id2word=id2word,
-                                           num_topics=20, 
+                                           num_topics=5, 
                                            random_state=100,
                                            update_every=1,
                                            chunksize=100,
@@ -236,4 +236,9 @@ lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
 ```
 # Interpreting and visualizing the results
 
-
+Now we cant get the keywords in each topic by writing the following line:
+```
+print(lda_model.print_topics())
+```
+The output of this line will be in the following format:
+which can be interpreted as...
