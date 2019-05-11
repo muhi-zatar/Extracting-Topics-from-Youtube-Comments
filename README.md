@@ -143,7 +143,7 @@ for i in videos_list:
     except:
       continue
  ```
-**Storing the collected Data in a database**
+# Storing the collected Data in a database
 
 # Data Preprocessing
 
