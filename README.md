@@ -9,16 +9,16 @@ This project scrabs viewers comments on political videos on Youtube, while getti
 
 - nltk
 
--spacy
+- spacy (download with !python3 -m spacy download en)
 
--gensim
+- gensim
 
 # Main Steps:
 The workflow of this project can be summurized in the following steps:
 
 1- Getting the Data (youtube comments on political videos). 
 
-2- Storing the collected data in a database using SQLite.
+2- Storing the collected data in a database using SQLite or a file.
 
 3- Data preprocessing (This step is always more important than you think).
 
