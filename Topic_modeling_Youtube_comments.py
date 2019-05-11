@@ -1,5 +1,21 @@
-api_key = "YOUR_API_KEY"
+# importing libraries and packages
 from apiclient.discovery import build
+import re
+import numpy as np
+import pandas as pd
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+# spacy for lemmatization
+import spacy
+
+# Plotting tools
+import pyLDAvis
+import pyLDAvis.gensim  # don't skip this
+import matplotlib.pyplot as plt
+%matplotlib inline
+
 youtube = build('youtube', 'v3', developerKey=api_key)
 query = 'politics'
 videos_list = [] #storing the videos IDs in a list
