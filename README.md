@@ -182,7 +182,38 @@ with open('youtube_comments.txt', 'w') as f:
     for comment in comment_list:
         f.write("%s\n" % item)
 ```
-On the other hand, amore sophisticated and feasible way to store data is using a database. 
+On the other hand, a more sophisticated and feasible way to store data is using a database. It is worth mentioning that how we are using the database in this example, is not the optimal use of databases and not the reason why databases were created in the first place, as they are created for far more complicated, relational and structured data. 
+
+We will be using [SQLite](https://docs.python.org/2/library/sqlite3.html) due to the fact that it does not require a separate server process and allows accessing the database using a nonstandard variant of the SQL query language. Frist of all, we need to establish a connection and create a cursor as following:
+```python
+import sqlite3
+con = sqlite3.connect('Youtube_comments.db')
+cur = con.cursor()
+```
+Then we need to create the table using the following SQL command (the name of the table is Youtube and it has one TEXT column called comment:
+```python
+cur.execute('''CREATE TABLE Youtube
+         (Comment TEXT NO NULL);''')
+con.commit()
+```
+The collected comments are currently stored in a list, which is required to be converted to a list of lists to be inserted in the database using execturemany() command:
+```python
+def list_to_listoflists(lst): 
+    result = [] 
+    for el in lst: 
+        sub = el.split(', ') 
+        result.append(sub) 
+      
+    return(result) 
+new_list = list_to_listoflists(comment_list)
+cur.executemany("INSERT INTO samples VALUES (?)", new_list)
+con.commit()
+```
+Now to fetch the data from the database, the following command is used:
+```python
+cur.execute('SELECT * FROM Youtube')
+data = cur.fetchall()
+```
 
 # Data Preprocessing
 
